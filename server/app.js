@@ -1,11 +1,25 @@
-import express from 'express';
-import routes from './routes/index.js';
-import { errorMiddleware } from './middleware/error.middleware.js';
+const express = require("express");
+
+const cors = require("cors");
+
+const helmet = require("helmet");
+
+const authRoutes = require(
+  "./modules/auth/auth.routes"
+);
 
 const app = express();
 
-app.use(express.json());
-app.use('/api', routes);
-app.use(errorMiddleware);
+app.use(cors());
 
-export default app;
+app.use(helmet());
+
+app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.send("Blood Connect API Running");
+});
+
+app.use("/api/v1/auth", authRoutes);
+
+module.exports = app;
