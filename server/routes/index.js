@@ -1,18 +1,12 @@
-import express from 'express';
-import authRoutes from '../modules/auth/auth.routes.js';
-import userRoutes from '../modules/user/user.routes.js';
-import donorRoutes from '../modules/donor/donor.routes.js';
-import bloodBankRoutes from '../modules/bloodBank/bloodBank.routes.js';
-import requestRoutes from '../modules/request/request.routes.js';
-import bloodRoutes from '../modules/blood/blood.routes.js';
+const express = require("express");
 
-const router = express.Router();
+const authRoutes = require(
+  "../modules/auth/auth.routes"
+);
 
-router.use('/auth', authRoutes);
-router.use('/users', userRoutes);
-router.use('/donors', donorRoutes);
-router.use('/blood-banks', bloodBankRoutes);
-router.use('/requests', requestRoutes);
-router.use('/blood', bloodRoutes);
 
-export default router;
+const setupRoutes = (app) => {
+  app.use("/api/v1/auth", authRoutes);
+  
+};
+module.exports = setupRoutes;
