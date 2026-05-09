@@ -1,28 +1,17 @@
 const jwt = require("jsonwebtoken");
 
-const User = require(
-  "../modules/auth/auth.model"
-);
+const User = require("../modules/auth/auth.model");
 
-const authMiddleware = async (
-  req,
-  res,
-  next
-) => {
+const authMiddleware = async (req, res, next) => {
   try {
     let token;
 
     // check header
     if (
       req.headers.authorization &&
-      req.headers.authorization.startsWith(
-        "Bearer"
-      )
+      req.headers.authorization.startsWith("Bearer")
     ) {
-      token =
-        req.headers.authorization.split(
-          " "
-        )[1];
+      token = req.headers.authorization.split(" ")[1];
     }
 
     // no token
@@ -34,15 +23,10 @@ const authMiddleware = async (
     }
 
     // verify token
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET
-    );
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     // get user
-    const user = await User.findById(
-      decoded.id
-    );
+    const user = await User.findById(decoded.id);
 
     if (!user) {
       return res.status(401).json({

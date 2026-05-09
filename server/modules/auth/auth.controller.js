@@ -1,65 +1,17 @@
-const {
-  registerUser,
-  loginUser,
-} = require("./auth.service");
+const { registerUser, loginUser } = require("./auth.service");
+const asyncHandler = require("../../utils/asyncHandler");
+const apiResponse = require("../../utils/apiResponse");
 
-const {
-  registerSchema,
-  loginSchema,
-} = require("./auth.validation");
+const registerController = asyncHandler(async (req, res) => {
+  const result = await registerUser(req.body);
+  apiResponse(res, 201, "User registered successfully", result);
 
-const registerController = async (
-  req,
-  res
-) => {
-  try {
-    // validate
-    const validatedData =
-      registerSchema.parse(req.body);
+});
 
-    // service
-    const result =
-      await registerUser(validatedData);
-
-    res.status(201).json({
-      success: true,
-      message:
-        "User registered successfully",
-      data: result,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-const loginController = async (
-  req,
-  res
-) => {
-  try {
-    // validate
-    const validatedData =
-      loginSchema.parse(req.body);
-
-    // service
-    const result =
-      await loginUser(validatedData);
-
-    res.status(200).json({
-      success: true,
-      message: "Login successful",
-      data: result,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+const loginController = asyncHandler(async (req, res) => {
+  const result = await loginUser(req.body);
+  apiResponse(res, 200, "Login successful", result);
+});
 
 module.exports = {
   registerController,

@@ -3,23 +3,16 @@ const bcrypt = require("bcryptjs");
 const User = require("./auth.model");
 
 const generateToken = require("../../utils/generateToken");
+const ApiError = require("../../utils/apiError");
 
 const registerUser = async (payload) => {
-  const {
-    fullName,
-    email,
-    password,
-    phone,
-    role,
-    city,
-    bloodGroup,
-  } = payload;
+  const { fullName, email, password, phone, role, city, bloodGroup } = payload;
 
   // check existing user
   const existingUser = await User.findOne({ email });
 
   if (existingUser) {
-    throw new Error("User already exists");
+    throw new ApiError(409, "User already exists");
   }
 
   // hash password
@@ -54,27 +47,22 @@ const loginUser = async (payload) => {
   const { email, password } = payload;
 
   // get password manually
-  const user = await User.findOne({ email })
-    .select("+password");
+  const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
-    throw new Error("Invalid credentials");
+    throw new ApiError(404, "Invalid credentials");
   }
 
   // compare password
-  const isPasswordMatched =
-    await bcrypt.compare(
-      password,
-      user.password
-    );
+  const isPasswordMatched = await bcrypt.compare(password, user.password);
 
   if (!isPasswordMatched) {
-    throw new Error("Invalid credentials");
+    throw new ApiError(401, "Invalid credentials");
   }
 
   // blocked check
   if (user.isBlocked) {
-    throw new Error("Account blocked");
+    throw new ApiError(403, "Account blocked");
   }
 
   // update last login
