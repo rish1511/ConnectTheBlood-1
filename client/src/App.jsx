@@ -1,3 +1,5 @@
+import AppRouter from './app/router/AppRouter'
+
 export default function App() {
-  return <div>Blood Connect App</div>;
+  return <AppRouter />
 }
