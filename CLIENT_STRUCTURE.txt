@@ -1,0 +1,97 @@
+client/
+│
+├── public/
+│
+├── src/
+│   ├── app/
+│   │   ├── layouts/
+│   │   │   ├── MainLayout.jsx
+│   │   │   └── DashboardLayout.jsx
+│   │   ├── router/
+│   │   │   └── AppRouter.jsx
+│   │   └── store/
+│   │
+│   ├── assets/
+│   │   ├── icons/
+│   │   ├── images/
+│   │   └── svgs/
+│   │
+│   ├── components/
+│   │   ├── shared/
+│   │   │   ├── Footer.jsx
+│   │   │   ├── Logo.jsx
+│   │   │   ├── Navbar.jsx
+│   │   │   └── ProtectedRoute.jsx
+│   │   └── ui/
+│   │       ├── Button.jsx
+│   │       ├── FormError.jsx
+│   │       ├── Input.jsx
+│   │       ├── Loader.jsx
+│   │       ├── Modal.jsx
+│   │       └── Select.jsx
+│   │
+│   ├── constants/
+│   │   ├── bloodGroups.js
+│   │   ├── roles.js
+│   │   └── routes.js
+│   │
+│   ├── features/
+│   │   ├── auth/
+│   │   │   ├── api/
+│   │   │   │   └── authApi.js
+│   │   │   ├── components/
+│   │   │   │   ├── LoginForm.jsx
+│   │   │   │   └── SignupForm.jsx
+│   │   │   ├── hooks/
+│   │   │   ├── pages/
+│   │   │   ├── schemas/
+│   │   │   ├── slices/
+│   │   │   └── types/
+│   │   │
+│   │   ├── dashboard/
+│   │   │   ├── components/
+│   │   │   └── pages/
+│   │   │
+│   │   ├── donor/
+│   │   │   ├── api/
+│   │   │   ├── components/
+│   │   │   ├── pages/
+│   │   │   ├── schemas/
+│   │   │   └── types/
+│   │   │
+│   │   ├── home/
+│   │   │   ├── components/
+│   │   │   └── pages/
+│   │   │
+│   │   └── request/
+│   │       ├── api/
+│   │       ├── components/
+│   │       ├── pages/
+│   │       ├── schemas/
+│   │       └── types/
+│   │
+│   ├── hooks/
+│   │   ├── useDebounce.js
+│   │   └── useToggle.js
+│   │
+│   ├── lib/
+│   │   ├── axios.js
+│   │   └── utils.js
+│   │
+│   ├── types/
+│   │   └── index.js
+│   │
+│   ├── App.jsx
+│   ├── App.css
+│   ├── index.css
+│   └── main.jsx
+│
+├── .eslintrc.config.js
+├── .gitignore
+├── eslint.config.js
+├── index.html
+├── node_modules/
+├── package.json
+├── package-lock.json
+├── README.md
+└── vite.config.js
