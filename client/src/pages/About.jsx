@@ -130,7 +130,7 @@ const About = () => {
         </div>
 
         {/* CTA */}
-        <div className="mt-12 bg-gradient-to-r from-red-500 to-rose-500 rounded-[32px] p-10 text-center text-white">
+        {/* <div className="mt-12 bg-gradient-to-r from-red-500 to-rose-500 rounded-[32px] p-10 text-center text-white">
 
           <h2 className="text-3xl font-bold">
             Be a Part of the Mission
@@ -159,7 +159,7 @@ const About = () => {
             </Link>
 
           </div>
-        </div>
+        </div> */}
 
       </section>
 

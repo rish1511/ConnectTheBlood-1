@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import AuthLeftPage from "../components/structuredComponent/AuthLeftPage";
+import { loginUser } from "../api/authApi";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -23,40 +24,63 @@ const Login = () => {
     }));
   };
 
- const handleSubmit = (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
 
-  // Get all users
-  const users =
-    JSON.parse(localStorage.getItem("users")) || [];
+  try {
+    const response = await loginUser({
+      email: form.email,
+      password: form.password,
+    });
 
-  // Find matching user
-  const foundUser = users.find(
-    (user) =>
-      user.email === form.email &&
-      user.password === form.password
-  );
+    console.log(response);
 
-  if (!foundUser) {
-    alert("Invalid email or password");
-    return;
+    const user = response.data.user;
+    const token = response.data.token;
+
+    // Save token
+    localStorage.setItem(
+      "token",
+      token
+    );
+
+    // Save user
+    localStorage.setItem(
+      "user",
+      JSON.stringify(user)
+    );
+
+    alert("Login successful");
+
+    // Role based redirect
+    switch (user.role) {
+      case "donor":
+        navigate("/dashboard/donor");
+        break;
+
+      case "seeker":
+        navigate("/dashboard/recipient");
+        break;
+
+      case "bloodbank":
+        navigate("/dashboard/blood-bank");
+        break;
+
+      case "admin":
+        navigate("/dashboard/admin");
+        break;
+
+      default:
+        navigate("/");
+    }
+  } catch (error) {
+    console.error(error);
+
+    alert(
+      error.response?.data?.message ||
+        "Invalid email or password"
+    );
   }
-
-  // Login state
-  localStorage.setItem(
-    "isLoggedIn",
-    "true"
-  );
-
-  // Current logged user
-  localStorage.setItem(
-    "loggedInUser",
-    JSON.stringify(foundUser)
-  );
-
-  alert("Login successful");
-
-  navigate("/");
 };
 
   return (

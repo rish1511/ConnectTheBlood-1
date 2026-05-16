@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthLeftPage from "../components/structuredComponent/AuthLeftPage";
+import { registerUser } from "../Api/authApi";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -10,19 +11,12 @@ const Signup = () => {
     email: "",
     password: "",
     bloodGroup: "",
-    location: "",
+    city: "",
+    phone: "",
+    role: "donor",
   });
 
-  const bloodGroups = [
-    "A+",
-    "A-",
-    "B+",
-    "B-",
-    "AB+",
-    "AB-",
-    "O+",
-    "O-",
-  ];
+  const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,49 +27,65 @@ const Signup = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (form.password.length < 8) {
-    alert("Password must be at least 8 characters");
-    return;
-  }
+    try {
+      if (form.password.length < 8) {
+        alert("Password must be at least 8 characters");
+        return;
+      }
 
-  // Get existing users
-  const existingUsers =
-    JSON.parse(localStorage.getItem("users")) || [];
+      const response = await registerUser(form);
 
-  // Check if email already exists
-  const userExists = existingUsers.some(
-    (user) => user.email === form.email
-  );
+      // token save
+      localStorage.setItem("token", response.token);
 
-  if (userExists) {
-    alert("Email already exists");
-    return;
-  }
+      // user save
+      localStorage.setItem("user", JSON.stringify(response.user));
 
-  // Create new user
-  const newUser = {
-    id: Date.now(),
-    ...form,
+      alert("Signup successful");
+
+      navigate("/login");
+    } catch (error) {
+      console.error(error);
+
+      alert(error.response?.data?.message || "Signup failed");
+    }
   };
 
-  // Save all users
-  const updatedUsers = [
-    ...existingUsers,
-    newUser,
-  ];
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
 
-  localStorage.setItem(
-    "users",
-    JSON.stringify(updatedUsers)
-  );
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
+          );
 
-  alert("Signup successful");
+          const data = await response.json();
 
-  navigate("/login");
-};
+          const city =
+            data.address.city ||
+            data.address.town ||
+            data.address.village ||
+            "";
+          const state = data.address.state || "";
+
+          setForm((prev) => ({
+            ...prev,
+             city: `${city}, ${state}`,
+          }));
+        } catch (error) {
+          console.log("Location fetch failed", error);
+        }
+      },
+      (error) => {
+        console.log("Location permission denied", error);
+      },
+    );
+  }, []);
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -144,8 +154,22 @@ const Signup = () => {
                 required
               />
             </div>
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">
+                Phone Number
+              </label>
 
-            {/* Blood Group + Location */}
+              <input
+                type="text"
+                name="phone"
+                placeholder="9876543210"
+                value={form.phone}
+                onChange={handleChange}
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 outline-none focus:ring-2 focus:ring-red-400"
+                required
+              />
+            </div>
+
             <div className="flex gap-4">
               {/* Blood Group */}
               <div className="flex-1">
@@ -170,17 +194,17 @@ const Signup = () => {
                 </select>
               </div>
 
-              {/* Location */}
+              {/* City */}
               <div className="flex-1">
                 <label className="mb-1 block text-sm font-medium text-gray-700">
-                  Location
+                  City
                 </label>
 
                 <input
                   type="text"
-                  name="location"
+                  name="city"
                   placeholder="Bhopal, MP"
-                  value={form.location}
+                  value={form.city}
                   onChange={handleChange}
                   className="w-full rounded-lg border border-gray-300 px-4 py-2 outline-none focus:ring-2 focus:ring-red-400"
                   required

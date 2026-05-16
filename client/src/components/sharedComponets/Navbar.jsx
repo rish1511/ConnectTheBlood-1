@@ -3,15 +3,41 @@ import { Link, useNavigate } from "react-router-dom";
 const Navbar = () => {
   const navigate = useNavigate();
 
-  const isLoggedIn =
-    localStorage.getItem("isLoggedIn") === "true";
+  // Real auth
+  const token =
+    localStorage.getItem("token");
+
+  const user = JSON.parse(
+    localStorage.getItem("user")
+  );
+
+  // Role based dashboard route
+  const getDashboardRoute = () => {
+    switch (user?.role) {
+      case "donor":
+        return "/dashboard/donor";
+
+      case "seeker":
+        return "/dashboard/recipient";
+
+      case "bloodbank":
+        return "/dashboard/blood-bank";
+
+      case "admin":
+        return "/dashboard/admin";
+
+      default:
+        return "/";
+    }
+  };
 
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
+    // Clear auth
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
 
     alert("Logout Successful");
 
-    // Home page pe hi rakhega
     navigate("/");
   };
 
@@ -64,11 +90,11 @@ const Navbar = () => {
         {/* Right Buttons */}
         <div className="flex items-center gap-3">
 
-          {isLoggedIn ? (
+          {token ? (
             <>
               {/* Dashboard Button */}
               <Link
-                to="/dashboard"
+                to={getDashboardRoute()}
                 className="rounded-md border border-red-300 px-4 py-2 text-xs font-medium text-red-600 transition hover:bg-red-50"
               >
                 Dashboard

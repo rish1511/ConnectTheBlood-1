@@ -184,7 +184,7 @@ const HowItWorks = () => {
         </div>
 
         {/* CTA */}
-        <div className="mt-16 bg-gradient-to-r from-red-500 to-rose-500 rounded-[32px] p-10 text-center text-white">
+        <div className="mt-19 h-62 bg-gradient-to-r from-red-500 to-rose-500 rounded-[32px] p-10 text-center text-white">
 
           <h2 className="text-3xl font-bold">
             Ready to Save Lives?

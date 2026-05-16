@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import Navbar from "../components/sharedComponets/Navbar";
+
+import BacktoHome from "../components/structuredComponent/BacktoHome";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      <BacktoHome/>
 
       <main className="mx-auto max-w-7xl px-8 py-10">
         <div className="mb-8 flex items-center justify-between gap-4">
@@ -26,13 +27,7 @@ const Dashboard = () => {
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="rounded-md border border-red-200 px-4 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50"
-          >
-            Logout
-          </button>
+          
         </div>
 
         <section className="grid gap-4 md:grid-cols-3">

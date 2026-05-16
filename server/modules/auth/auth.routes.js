@@ -1,15 +1,25 @@
 const express = require("express");
 const { registerController, loginController } = require("./auth.controller");
-const {registerschema, loginSchema} = require("./auth.validation");
-const {loginLimiter , registerLimiter} = require("../../config/rate-limiter");
+const { registerSchema, loginSchema } = require("./auth.validation");
+const { loginLimiter, registerLimiter } = require("../../config/rate-limiter");
 const validationMiddleware = require("../../middleware/validation.middleware");
 const authMiddleware = require("../../middleware/auth.middleware");
 const authorizeRoles = require("../../middleware/role.middleware");
 const router = express.Router();
 
-router.post("/register", registerLimiter, validationMiddleware(registerschema), registerController);
+router.post(
+  "/register",
+  registerLimiter,
+  validationMiddleware(registerSchema),
+  registerController,
+);
 
-router.post("/login", loginLimiter, validationMiddleware(loginSchema), loginController);
+router.post(
+  "/login",
+  // loginLimiter,
+  validationMiddleware(loginSchema),
+  loginController,
+);
 
 router.get("/test-error", (req, res) => {
   throw new Error("Testing Error Middleware");
