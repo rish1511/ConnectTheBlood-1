@@ -70,6 +70,28 @@ export const acceptEmergencyRequest =
     return response.data;
   };
 
+// Accepted requests waiting for completion
+export const getAcceptedRequests =
+  async () => {
+    const response =
+      await API.get(
+        "/donor/accepted-requests"
+      );
+
+    return response.data;
+  };
+
+// Mark accepted request as completed
+export const completeEmergencyRequest =
+  async (id) => {
+    const response =
+      await API.patch(
+        `/donor/emergency-requests/${id}/complete`
+      );
+
+    return response.data;
+  };
+
 // Donation history
 export const getDonationHistory =
   async () => {

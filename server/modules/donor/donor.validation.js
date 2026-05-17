@@ -16,13 +16,10 @@ const updateProfileSchema =
 
     phone: z
       .string()
-      .min(
-        10,
-        "Phone number must be at least 10 digits"
-      )
-      .max(
-        15,
-        "Phone number cannot exceed 15 digits"
+      .trim()
+      .regex(
+        /^\d{10}$/,
+        "Phone number must be exactly 10 digits"
       )
       .optional(),
 

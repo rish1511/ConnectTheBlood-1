@@ -57,7 +57,30 @@ const Blogs = () => {
 
       {/* Blog Cards */}
       <section className="max-w-6xl mx-auto px-6 py-16 flex-1">
-       
+        <div className="grid gap-6 md:grid-cols-3">
+          {blogPosts.map((post) => (
+            <article
+              key={post.id}
+              className="rounded-[28px] border border-gray-100 bg-white p-6 shadow-sm"
+            >
+              <span className="rounded-full bg-red-50 px-3 py-1 text-xs font-semibold text-red-600">
+                {post.category}
+              </span>
+
+              <h2 className="mt-4 text-xl font-bold text-gray-900">
+                {post.title}
+              </h2>
+
+              <p className="mt-3 text-sm leading-6 text-gray-500">
+                {post.description}
+              </p>
+
+              <p className="mt-5 text-xs font-medium text-gray-400">
+                {post.date}
+              </p>
+            </article>
+          ))}
+        </div>
 
         {/* Empty State for future */}
         <div className="mt-20 text-center bg-white rounded-[32px] border border-dashed border-gray-300 p-10">

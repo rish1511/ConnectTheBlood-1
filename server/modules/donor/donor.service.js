@@ -99,13 +99,11 @@ const getDonorDashboardService = async (userId) => {
     emergencyQuery.city = cityFilter;
   }
 
-  const [totalDonations, livesSaved, emergencyRequestsCount] =
+  const [totalDonations, unitsDonated, emergencyRequestsCount] =
     await Promise.all([
       Request.countDocuments({
         acceptedBy: userId,
-        status: {
-          $in: ["accepted", "completed"],
-        },
+        status: "completed",
       }),
       Request.aggregate([
         {
@@ -130,7 +128,7 @@ const getDonorDashboardService = async (userId) => {
     donor,
     stats: {
       totalDonations,
-      livesSaved: livesSaved[0]?.total || 0,
+      unitsDonated: unitsDonated[0]?.total || 0,
       emergencyRequestsCount,
     },
   };
@@ -209,8 +207,68 @@ const acceptEmergencyRequestService = async (userId, requestId) => {
 
   request.status = "accepted";
   request.acceptedBy = donor._id;
+  donor.available = false;
 
-  await request.save();
+  await Promise.all([request.save(), donor.save()]);
+
+  return request;
+};
+
+const getAcceptedRequestsService = async (userId) => {
+  const donor = await User.findById(userId);
+
+  if (!donor) {
+    throw new ApiError(404, "Donor not found");
+  }
+
+  return Request.find({
+    acceptedBy: donor._id,
+    status: "accepted",
+  })
+    .sort({
+      updatedAt: -1,
+    })
+    .select(
+      `
+        patientName
+        bloodGroup
+        hospital
+        city
+        urgency
+        unitsRequired
+        contactNumber
+        status
+        createdAt
+        updatedAt
+      `,
+    );
+};
+
+const completeEmergencyRequestService = async (userId, requestId) => {
+  const donor = await User.findById(userId);
+
+  if (!donor) {
+    throw new ApiError(404, "Donor not found");
+  }
+
+  const request = await Request.findOne({
+    _id: requestId,
+    acceptedBy: donor._id,
+  });
+
+  if (!request) {
+    throw new ApiError(404, "Accepted request not found");
+  }
+
+  if (request.status !== "accepted") {
+    throw new ApiError(400, "Only accepted requests can be completed");
+  }
+
+  request.status = "completed";
+  donor.available = true;
+  donor.lastDonationDate = new Date();
+
+  await Promise.all([request.save(), donor.save()]);
 
   return request;
 };
@@ -224,9 +282,7 @@ const getDonationHistoryService = async (userId) => {
 
   return Request.find({
     acceptedBy: donor._id,
-    status: {
-      $in: ["accepted", "completed"],
-    },
+    status: "completed",
   })
     .sort({
       updatedAt: -1,
@@ -254,5 +310,7 @@ module.exports = {
   getDonorDashboardService,
   getEmergencyRequestService,
   acceptEmergencyRequestService,
+  getAcceptedRequestsService,
+  completeEmergencyRequestService,
   getDonationHistoryService,
 };

@@ -5,13 +5,16 @@ const urgencyLevels = ["low", "medium", "high", "critical"];
 const requestStatuses = ["pending", "accepted", "completed", "cancelled"];
 
 const createRequestSchema = z.object({
-  patientName: z.string().min(3).max(50),
+  patientName: z.string().trim().min(3).max(50),
   bloodGroup: z.enum(bloodGroups),
-  hospital: z.string().min(2).max(100),
-  city: z.string().min(2).max(50),
+  hospital: z.string().trim().min(2).max(100),
+  city: z.string().trim().min(2).max(50),
   urgency: z.enum(urgencyLevels).optional(),
-  unitsRequired: z.number().int().min(1).max(10).optional(),
-  contactNumber: z.string().min(10).max(15),
+  unitsRequired: z.coerce.number().int().min(1).max(10).optional(),
+  contactNumber: z
+    .string()
+    .trim()
+    .regex(/^\d{10}$/, "Contact number must be exactly 10 digits"),
 });
 
 const updateRequestStatusSchema = z.object({

@@ -1,5 +1,6 @@
 
 const { z } = require("zod");
+const { USER_ROLES, BLOOD_GROUPS } = require("./auth.constants");
 
 const registerSchema = z.object({
   fullName: z
@@ -17,18 +18,20 @@ const registerSchema = z.object({
 
   phone: z
     .string()
-    .min(10),
+    .trim()
+    .regex(/^\d{10}$/, "Phone number must be exactly 10 digits"),
 
   role: z
-    .string()
-    .optional(),
+    .enum(Object.values(USER_ROLES))
+    .optional()
+    .default(USER_ROLES.SEEKER),
 
   city: z
     .string()
     .optional(),
 
   bloodGroup: z
-    .string()
+    .enum(BLOOD_GROUPS)
     .optional(),
 });
 

@@ -17,6 +17,10 @@ const requestRoutes = require(
   "../modules/request/request.routes"
 );
 
+const recipientRoutes = require(
+  "../modules/recipient/recipient.routes"
+);
+
 const setupRoutes = (app) => {
   app.use(
     `/api/${API_VERSION}/auth`,
@@ -31,6 +35,11 @@ const setupRoutes = (app) => {
   app.use(
     `/api/${API_VERSION}/requests`,
     requestRoutes
+  );
+
+  app.use(
+    `/api/${API_VERSION}/recipient`,
+    recipientRoutes
   );
 };
 

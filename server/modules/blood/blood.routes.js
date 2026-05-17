@@ -1,7 +1,7 @@
-import express from 'express';
-import { bloodController } from './blood.controller.js';
+const express = require("express");
+const { bloodController } = require("./blood.controller");
 
 const router = express.Router();
-router.get('/search', bloodController.search);
+router.get("/search", bloodController.search);
 
-export default router;
+module.exports = router;

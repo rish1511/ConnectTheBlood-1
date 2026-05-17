@@ -2,12 +2,14 @@ import { Navigate, Routes, Route } from "react-router-dom";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
-import Dashboard from "../pages/Dashboard";
 import AdminDashboard from "../pages/dashboard/admin/AdminDashboard";
 import DonorDashboard from "../pages/dashboard/donor/DonorDashboard";
 import DonorEmergencyRequests from "../pages/dashboard/donor/DonorEmergencyRequests";
 import DonorDonationHistory from "../pages/dashboard/donor/DonorDonationHistory";
 import RecipientDashboard from "../pages/dashboard/recipient/RecipientDashboard";
+import RecipientNearbyDonors from "../pages/dashboard/recipient/RecipientNearbyDonors";
+import RecipientNewRequest from "../pages/dashboard/recipient/RecipientNewRequest";
+import RecipientRequestHistory from "../pages/dashboard/recipient/RecipientRequestHistory";
 import BloodBankDashboard from "../pages/dashboard/bloodBank/BloodBankDashboard";
 import ForgotPassword from "../components/UI/ForgotPassword";
 import ProtectedRoute from "./ProtectedRoute";
@@ -47,6 +49,18 @@ function AppRouter() {
           element={<Navigate to="/dashboard/donor" replace />}
         />
         <Route path="/dashboard/recipient" element={<RecipientDashboard />} />
+        <Route
+          path="/dashboard/recipient/new-request"
+          element={<RecipientNewRequest />}
+        />
+        <Route
+          path="/dashboard/recipient/request-history"
+          element={<RecipientRequestHistory />}
+        />
+        <Route
+          path="/dashboard/recipient/nearby-donors"
+          element={<RecipientNearbyDonors />}
+        />
         <Route path="/dashboard/blood-bank" element={<BloodBankDashboard />} />
       </Route>
     </Routes>

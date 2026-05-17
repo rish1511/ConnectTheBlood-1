@@ -45,6 +45,8 @@ const requestSchema =
       contactNumber: {
         type: String,
         required: true,
+        trim: true,
+        match: [/^\d{10}$/, "Contact number must be exactly 10 digits"],
       },
 
       status: {

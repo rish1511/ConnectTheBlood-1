@@ -13,6 +13,8 @@ const {
   getDonorDashboard,
   getEmergencyRequests,
   acceptEmergencyRequest,
+  getAcceptedRequests,
+  completeEmergencyRequest,
   getDonationHistory,
 } = require("./donor.controller");
 
@@ -73,6 +75,24 @@ router.post(
     USER_ROLES.DONOR
   ),
   acceptEmergencyRequest,
+);
+
+router.get(
+  "/accepted-requests",
+  authMiddleware,
+  authorizeRoles(
+    USER_ROLES.DONOR
+  ),
+  getAcceptedRequests,
+);
+
+router.patch(
+  "/emergency-requests/:id/complete",
+  authMiddleware,
+  authorizeRoles(
+    USER_ROLES.DONOR
+  ),
+  completeEmergencyRequest,
 );
 
 router.get(

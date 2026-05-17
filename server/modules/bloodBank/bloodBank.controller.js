@@ -1,4 +1,7 @@
-// BloodBank controller placeholder
-export const bloodBankController = {
-  list: (req, res) => res.send('blood bank list'),
+const bloodBankController = {
+  list: (req, res) => res.send("blood bank list"),
+};
+
+module.exports = {
+  bloodBankController,
 };

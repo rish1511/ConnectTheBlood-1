@@ -1,12 +1,8 @@
 import Sidebar from "./structuredComponents/Sidebar";
 import Topbar from "./structuredComponents/Topbar";
 import DonationHistory from "./structuredComponents/DonationHistory";
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
 
 const DonorDonationHistory = () => {
-  const navigate = useNavigate();
-
   return (
     <div className="flex h-screen bg-gray-100 overflow-hidden">
       {/* Sidebar */}

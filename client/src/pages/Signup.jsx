@@ -16,17 +16,19 @@ const Signup = () => {
     bloodGroup: "",
     city: "",
     phone: "",
-    role: "donor",
+    role: "seeker",
   });
 
   const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    const nextValue =
+      name === "phone" ? value.replace(/\D/g, "").slice(0, 10) : value;
 
     setForm((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: nextValue,
     }));
   };
 
@@ -36,6 +38,11 @@ const Signup = () => {
     try {
       if (form.password.length < 8) {
         alert("Password must be at least 8 characters");
+        return;
+      }
+
+      if (!/^\d{10}$/.test(form.phone)) {
+        alert("Phone number must be exactly 10 digits");
         return;
       }
 
@@ -96,7 +103,7 @@ const Signup = () => {
       <AuthLeftPage />
 
       {/* Right Form */}
-      <div className="flex flex-1 items-center justify-center px-8 py-8">
+      <div className="flex flex-1 items-center justify-center px-8 py-6">
         <div className="w-full max-w-sm">
           <h2 className="mb-1 text-2xl font-bold text-gray-900">
             Create account
@@ -181,11 +188,14 @@ const Signup = () => {
               </label>
 
               <input
-                type="text"
+                type="tel"
                 name="phone"
                 placeholder="9876543210"
                 value={form.phone}
                 onChange={handleChange}
+                inputMode="numeric"
+                maxLength={10}
+                pattern="\d{10}"
                 className="w-full rounded-lg border border-gray-300 px-4 py-2 outline-none focus:ring-2 focus:ring-red-400"
                 required
               />
@@ -242,7 +252,7 @@ const Signup = () => {
             </button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-gray-500">
+          <p className="mt-3 text-center text-sm text-gray-500">
             Already have an account?{" "}
             <Link
               to="/login"

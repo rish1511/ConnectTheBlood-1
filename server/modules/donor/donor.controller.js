@@ -8,6 +8,8 @@ const {
   getDonorDashboardService,
   getEmergencyRequestService,
   acceptEmergencyRequestService,
+  getAcceptedRequestsService,
+  completeEmergencyRequestService,
   getDonationHistoryService,
 } = require("./donor.service");
 
@@ -72,6 +74,31 @@ const acceptEmergencyRequest = asyncHandler(async (req, res) => {
   );
 });
 
+const getAcceptedRequests = asyncHandler(async (req, res) => {
+  const requests = await getAcceptedRequestsService(req.user.id);
+
+  return apiResponse(
+    res,
+    200,
+    "Accepted requests fetched successfully",
+    requests,
+  );
+});
+
+const completeEmergencyRequest = asyncHandler(async (req, res) => {
+  const request = await completeEmergencyRequestService(
+    req.user.id,
+    req.params.id,
+  );
+
+  return apiResponse(
+    res,
+    200,
+    "Donation marked completed successfully",
+    request,
+  );
+});
+
 const getDonationHistory = asyncHandler(async (req, res) => {
   const donations = await getDonationHistoryService(req.user.id);
 
@@ -90,5 +117,7 @@ module.exports = {
   getDonorDashboard,
   getEmergencyRequests,
   acceptEmergencyRequest,
+  getAcceptedRequests,
+  completeEmergencyRequest,
   getDonationHistory,
 };

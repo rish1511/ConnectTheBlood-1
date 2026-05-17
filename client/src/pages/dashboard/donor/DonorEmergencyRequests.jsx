@@ -2,16 +2,12 @@ import { useEffect, useState } from "react";
 import Sidebar from "./structuredComponents/Sidebar";
 import Topbar from "./structuredComponents/Topbar";
 import EmergencyRequests from "./structuredComponents/EmergencyRequests";
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
 import {
   acceptEmergencyRequest,
   getEmergencyRequests,
 } from "../../../Api/donorApi";
 
 const DonorEmergencyRequests = () => {
-  const navigate = useNavigate();
-
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -41,7 +37,9 @@ const DonorEmergencyRequests = () => {
   };
 
   useEffect(() => {
-    fetchEmergencyRequests();
+    queueMicrotask(() => {
+      fetchEmergencyRequests();
+    });
   }, []);
 
   const handleAccept = async (requestId) => {

@@ -21,7 +21,7 @@ const {
 router.post(
   "/",
   authMiddleware,
-  authorizeRoles(USER_ROLES.SEEKER, USER_ROLES.ADMIN),
+  authorizeRoles(USER_ROLES.SEEKER, USER_ROLES.DONOR, USER_ROLES.ADMIN),
   validate(createRequestSchema),
   createRequest,
 );
@@ -29,7 +29,7 @@ router.post(
 router.get(
   "/my",
   authMiddleware,
-  authorizeRoles(USER_ROLES.SEEKER, USER_ROLES.ADMIN),
+  authorizeRoles(USER_ROLES.SEEKER, USER_ROLES.DONOR, USER_ROLES.ADMIN),
   getMyRequests,
 );
 

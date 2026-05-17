@@ -26,7 +26,9 @@ const DonorDashboard = () => {
   };
 
   useEffect(() => {
-    fetchDashboard();
+    queueMicrotask(() => {
+      fetchDashboard();
+    });
   }, []);
 
   if (loading) {

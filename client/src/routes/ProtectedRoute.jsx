@@ -61,16 +61,19 @@ const ProtectedRoute = () => {
   const currentPath = location.pathname;
 
   const roleRoutes = {
-    donor: "/dashboard/donor",
-    seeker: "/dashboard/recipient",
-    bloodbank: "/dashboard/blood-bank",
-    admin: "/dashboard/admin",
+    donor: ["/dashboard/donor", "/dashboard/recipient"],
+    seeker: ["/dashboard/recipient"],
+    bloodbank: ["/dashboard/blood-bank"],
+    admin: ["/dashboard/admin"],
   };
 
-  const allowedRoute = roleRoutes[user?.role];
+  const allowedRoutes = roleRoutes[user?.role];
 
-  if (allowedRoute && !currentPath.startsWith(allowedRoute)) {
-    return <Navigate to={allowedRoute} replace />;
+  if (
+    allowedRoutes &&
+    !allowedRoutes.some((route) => currentPath.startsWith(route))
+  ) {
+    return <Navigate to={allowedRoutes[0]} replace />;
   }
 
   return <Outlet />;

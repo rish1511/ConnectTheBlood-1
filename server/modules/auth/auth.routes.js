@@ -1,5 +1,9 @@
 const express = require("express");
-const { registerController, loginController } = require("./auth.controller");
+const {
+  registerController,
+  loginController,
+  becomeDonorController,
+} = require("./auth.controller");
 const { registerSchema, loginSchema } = require("./auth.validation");
 const { loginLimiter, registerLimiter } = require("../../config/rate-limiter");
 const validationMiddleware = require("../../middleware/validation.middleware");
@@ -32,6 +36,8 @@ router.get("/me", authMiddleware, (req, res) => {
     user: req.user,
   });
 });
+
+router.patch("/become-donor", authMiddleware, becomeDonorController);
 
 // admin only route
 router.get("/admin", authMiddleware, authorizeRoles("admin"), (req, res) => {

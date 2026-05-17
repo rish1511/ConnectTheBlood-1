@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import Sidebar from "./structuredComponents/Sidebar";
+import Topbar from "./structuredComponents/Topbar";
 
 import { getDonorProfile, updateDonorProfile } from "../../../Api/donorApi";
 
@@ -40,15 +41,19 @@ const DonorProfile = () => {
   };
 
   useEffect(() => {
-    fetchProfile();
+    queueMicrotask(() => {
+      fetchProfile();
+    });
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    const nextValue =
+      name === "phone" ? value.replace(/\D/g, "").slice(0, 10) : value;
 
     setForm((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: nextValue,
     }));
   };
 
@@ -56,9 +61,23 @@ const DonorProfile = () => {
     e.preventDefault();
 
     try {
+      if (!/^\d{10}$/.test(form.phone)) {
+        alert("Phone number must be exactly 10 digits");
+        return;
+      }
+
       setSaving(true);
 
-      await updateDonorProfile(form);
+      // send only fields that have values to avoid sending empty strings
+      const payload = {};
+
+      Object.entries(form).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+          payload[key] = value;
+        }
+      });
+
+      await updateDonorProfile(payload);
 
       alert("Profile updated successfully");
     } catch (error) {
@@ -83,7 +102,9 @@ const DonorProfile = () => {
       <Sidebar />
 
       <div className="flex-1 overflow-y-auto p-6 pb-24 lg:pb-6">
-        <div className="mx-auto max-w-4xl rounded-[32px] bg-white p-8 shadow-sm">
+        <Topbar donor={form} />
+
+        <div className="mx-auto mt-6 max-w-4xl rounded-[32px] bg-white p-8 shadow-sm">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900">My Profile</h1>
 
@@ -140,10 +161,13 @@ const DonorProfile = () => {
                 </label>
 
                 <input
-                  type="text"
+                  type="tel"
                   name="phone"
                   value={form.phone}
                   onChange={handleChange}
+                  inputMode="numeric"
+                  maxLength={10}
+                  pattern="\d{10}"
                   className="w-full rounded-2xl border border-gray-300 px-4 py-3 outline-none focus:ring-2 focus:ring-red-400"
                 />
               </div>

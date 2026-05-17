@@ -1,4 +1,7 @@
-// BloodBank service placeholder
-export const bloodBankService = {
+const bloodBankService = {
   getBloodBanks: async () => [],
+};
+
+module.exports = {
+  bloodBankService,
 };

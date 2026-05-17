@@ -17,3 +17,9 @@ export const getMe = async () => {
   const response = await API.get("/auth/me");
   return response.data;
 };
+
+// Upgrade logged-in seeker account to donor
+export const becomeDonor = async () => {
+  const response = await API.patch("/auth/become-donor");
+  return response.data;
+};

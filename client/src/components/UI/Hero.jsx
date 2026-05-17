@@ -1,10 +1,38 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { getAuthAwareRoute } from "../../utils/authRoute";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { becomeDonor } from "../../Api/authApi";
+import { getStoredUser } from "../../utils/authRoute";
 
 const Hero = () => {
-  const donorRoute = getAuthAwareRoute("/signup");
-  const requestRoute = getAuthAwareRoute("/login");
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  const [user, setUser] = useState(getStoredUser());
+  const [loading, setLoading] = useState(false);
+
+  const isLoggedIn = Boolean(token);
+  const isDonor = user?.role === "donor";
+
+  const handleBecomeDonor = async () => {
+    if (!isLoggedIn) {
+      navigate("/signup");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const response = await becomeDonor();
+      const updatedUser = response.data;
+
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      setUser(updatedUser);
+      navigate("/dashboard/donor");
+    } catch (error) {
+      alert(error.response?.data?.message || "Unable to become a donor");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -28,33 +56,23 @@ const Hero = () => {
 
             {/* Buttons */}
             <div className="flex flex-wrap gap-4">
+              {!isDonor && (
+                <button
+                  type="button"
+                  onClick={handleBecomeDonor}
+                  disabled={loading}
+                  className="bg-red-500 hover:bg-red-600 transition-all duration-300 text-white px-7 py-3 rounded-xl font-medium shadow-md shadow-red-200 disabled:cursor-not-allowed disabled:bg-red-300"
+                >
+                  {loading ? "Updating..." : "Become a Donor"}
+                </button>
+              )}
+
               <Link
-                to={donorRoute}
+                to={isLoggedIn ? "/dashboard/recipient" : "/login"}
                 className="bg-red-500 hover:bg-red-600 transition-all duration-300 text-white px-7 py-3 rounded-xl font-medium shadow-md shadow-red-200"
               >
-                {donorRoute === "/signup"
-                  ? "Become a Donor"
-                  : "Go to Dashboard"}
+                Request Blood
               </Link>
-              {requestRoute === "/login" ? (
-                <Link
-                  to={requestRoute}
-                  className="border border-gray-200 bg-white hover:bg-gray-50 transition px-7 py-3 rounded-xl font-medium text-gray-700 shadow-sm"
-                >
-                  {requestRoute === "/login"
-                    ? "Request Blood"
-                    : "Open Dashboard"}
-                </Link>
-              ) : (
-                <Link
-                  to={requestRoute}
-                  className="border hidden border-gray-200 bg-white hover:bg-gray-50 transition px-7 py-3 rounded-xl font-medium text-gray-700 shadow-sm"
-                >
-                  {requestRoute === "/login"
-                    ? "Request Blood"
-                    : "Open Dashboard"}
-                </Link>
-              )}
             </div>
           </div>
 

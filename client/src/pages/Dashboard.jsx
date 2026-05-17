@@ -1,15 +1,7 @@
-import { useNavigate } from "react-router-dom";
-
 import BacktoHome from "../components/structuredComponent/BacktoHome";
 
 const Dashboard = () => {
-  const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user") || "{}");
-
-  const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
-    navigate("/login");
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">

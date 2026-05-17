@@ -1,5 +1,4 @@
-import React from 'react'
-import { ArrowLeft, Home } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Link } from 'react-router-dom';
 
 const BacktoHome = () => {

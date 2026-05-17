@@ -1,12 +1,13 @@
 const bcrypt = require("bcryptjs");
 
 const User = require("./auth.model");
+const { USER_ROLES } = require("./auth.constants");
 
 const generateToken = require("../../utils/generateToken");
 const ApiError = require("../../utils/apiError");
 
 const registerUser = async (payload) => {
-  const { fullName, email, password, phone, role, city, bloodGroup } = payload;
+  const { fullName, email, password, phone, city, bloodGroup } = payload;
 
   // check existing user
   const existingUser = await User.findOne({ email });
@@ -24,7 +25,7 @@ const registerUser = async (payload) => {
     email,
     password: hashedPassword,
     phone,
-    role,
+    role: USER_ROLES.SEEKER,
     city,
     bloodGroup,
   });
@@ -38,6 +39,9 @@ const registerUser = async (payload) => {
       fullName: user.fullName,
       email: user.email,
       role: user.role,
+      phone: user.phone,
+      city: user.city,
+      bloodGroup: user.bloodGroup,
     },
     token,
   };
@@ -79,12 +83,48 @@ const loginUser = async (payload) => {
       fullName: user.fullName,
       email: user.email,
       role: user.role,
+      phone: user.phone,
+      city: user.city,
+      bloodGroup: user.bloodGroup,
     },
     token,
+  };
+};
+
+const becomeDonor = async (userId) => {
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  if (!user.bloodGroup) {
+    throw new ApiError(400, "Please add blood group before becoming a donor");
+  }
+
+  if (!user.city) {
+    throw new ApiError(400, "Please add city before becoming a donor");
+  }
+
+  user.role = USER_ROLES.DONOR;
+  user.available = true;
+
+  await user.save();
+
+  return {
+    id: user._id,
+    fullName: user.fullName,
+    email: user.email,
+    role: user.role,
+    phone: user.phone,
+    city: user.city,
+    bloodGroup: user.bloodGroup,
+    available: user.available,
   };
 };
 
 module.exports = {
   registerUser,
   loginUser,
+  becomeDonor,
 };

@@ -12,8 +12,8 @@ const StatsCards = ({ stats, donor }) => {
     },
 
     {
-      title: "Lives Saved",
-      value: stats?.livesSaved ?? 0,
+      title: "Units Donated",
+      value: stats?.unitsDonated ?? stats?.livesSaved ?? 0,
       icon: HeartPulse,
       bg: "bg-pink-50",
       iconBg: "bg-pink-100",
