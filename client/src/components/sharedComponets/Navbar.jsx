@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import { getDashboardRoute, getStoredUser } from "../../utils/authRoute";
 
 const Navbar = () => {
@@ -15,7 +16,7 @@ const Navbar = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
-    alert("Logout Successful");
+    toast.success("Logout successful");
 
     navigate("/");
   };

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { CheckCircle, XCircle } from "lucide-react";
 
 import { updateDonorAvailability } from "../../../../Api/donorApi";
@@ -12,12 +13,15 @@ const AvailabilityToggle = ({ donor, onUpdate }) => {
       setIsLoading(true);
 
       await updateDonorAvailability(!isAvailable);
+      toast.success(
+        !isAvailable ? "You are available to donate" : "Availability paused",
+      );
       // Dashboard refresh
       onUpdate();
     } catch (error) {
       console.log("Availability Error:", error);
 
-      alert("Failed to update availability");
+      toast.error("Failed to update availability");
     } finally {
       setIsLoading(false);
     }

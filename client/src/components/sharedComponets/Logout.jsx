@@ -1,4 +1,5 @@
 import { LogOut } from "lucide-react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 const Logout = () => {
@@ -9,7 +10,7 @@ const Logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
-    alert("Logout Successful");
+    toast.success("Logout successful");
 
     navigate("/");
   };

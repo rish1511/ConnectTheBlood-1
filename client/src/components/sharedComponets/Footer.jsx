@@ -86,8 +86,8 @@ const Footer = () => {
 
             <div className="space-y-3 text-sm text-gray-600">
               <p>📍 India</p>
-              <p>📧 support@connecttheblood.com</p>
-              <p>📞 +91 9876543210</p>
+              <p>📧 rishabhsharma9805@gmail.com</p>
+              <p>📞 +91 7879457129</p>
             </div>
           </div>
 

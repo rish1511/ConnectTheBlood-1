@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 import Sidebar from "./structuredComponents/Sidebar";
 import Topbar from "./structuredComponents/Topbar";
@@ -62,7 +63,7 @@ const DonorProfile = () => {
 
     try {
       if (!/^\d{10}$/.test(form.phone)) {
-        alert("Phone number must be exactly 10 digits");
+        toast.error("Phone number must be exactly 10 digits");
         return;
       }
 
@@ -79,11 +80,11 @@ const DonorProfile = () => {
 
       await updateDonorProfile(payload);
 
-      alert("Profile updated successfully");
+      toast.success("Profile updated successfully");
     } catch (error) {
       console.log("Update Error:", error);
 
-      alert("Failed to update profile");
+      toast.error(error.response?.data?.message || "Failed to update profile");
     } finally {
       setSaving(false);
     }

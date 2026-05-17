@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import AuthLeftPage from "../components/structuredComponent/AuthLeftPage";
 import { registerUser } from "../Api/authApi";
@@ -37,12 +38,12 @@ const Signup = () => {
 
     try {
       if (form.password.length < 8) {
-        alert("Password must be at least 8 characters");
+        toast.error("Password must be at least 8 characters");
         return;
       }
 
       if (!/^\d{10}$/.test(form.phone)) {
-        alert("Phone number must be exactly 10 digits");
+        toast.error("Phone number must be exactly 10 digits");
         return;
       }
 
@@ -54,13 +55,13 @@ const Signup = () => {
       // user save
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
-      alert("Signup successful");
+      toast.success("Signup successful");
 
       navigate("/login");
     } catch (error) {
       console.error(error);
 
-      alert(error.response?.data?.message || "Signup failed");
+      toast.error(error.response?.data?.message || "Signup failed");
     }
   };
 

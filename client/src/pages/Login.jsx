@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import AuthLeftPage from "../components/structuredComponent/AuthLeftPage";
@@ -48,7 +49,7 @@ const handleSubmit = async (e) => {
       JSON.stringify(user)
     );
 
-    alert("Login successful");
+    toast.success("Login successful");
 
     // Role based redirect
     switch (user.role) {
@@ -74,7 +75,7 @@ const handleSubmit = async (e) => {
   } catch (error) {
     console.error(error);
 
-    alert(
+    toast.error(
       error.response?.data?.message ||
         "Invalid email or password"
     );

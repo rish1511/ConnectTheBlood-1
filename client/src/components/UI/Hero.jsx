@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { becomeDonor } from "../../Api/authApi";
 import { getStoredUser } from "../../utils/authRoute";
@@ -26,9 +27,10 @@ const Hero = () => {
 
       localStorage.setItem("user", JSON.stringify(updatedUser));
       setUser(updatedUser);
+      toast.success("You are now a donor");
       navigate("/dashboard/donor");
     } catch (error) {
-      alert(error.response?.data?.message || "Unable to become a donor");
+      toast.error(error.response?.data?.message || "Unable to become a donor");
     } finally {
       setLoading(false);
     }
