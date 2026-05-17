@@ -1,14 +1,10 @@
 import {
-  LayoutDashboard,
   HeartPulse,
-  MapPin,
   History,
+  LayoutDashboard,
   User,
-  Settings,
-  LogOut,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import BacktoHome from "../../../../components/structuredComponent/BacktoHome";
+import { useLocation, useNavigate } from "react-router-dom";
 import BacktoHomeForDashboard from "../../../../components/structuredComponent/backToHomeForDashboard";
 import Logout from "../../../../components/sharedComponets/Logout";
 
@@ -19,74 +15,92 @@ const menuItems = [
     path: "/dashboard/donor",
   },
   {
-    title: "Emergency Requests",
+    title: "Requests",
     icon: HeartPulse,
     path: "/dashboard/donor/emergency-requests",
   },
-  // {
-  //   title: "Nearby Recipients",
-  //   icon: MapPin,
-  // },
   {
-    title: "Donation History",
+    title: "History",
     icon: History,
     path: "/dashboard/donor/donation-history",
   },
-  // {
-  //   title: "Profile",
-  //   icon: User,
-  // },
-  // {
-  //   title: "Settings",
-  //   icon: Settings,
-  // },
+  {
+    title: "Profile",
+    icon: User,
+    path: "/dashboard/donor/profile",
+  },
 ];
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isActive = (path) => location.pathname === path;
 
   return (
-    <aside className="w-[280px] bg-white border-r border-gray-200 h-screen p-5 hidden lg:flex flex-col">
-      {/* Logo */}
-      <div className="flex items-center gap-3 pb-8 border-b border-gray-100">
-        <div className="w-12 h-12 rounded-2xl bg-red-100 flex items-center justify-center text-xl">
-          🩸
+    <>
+      <aside className="hidden h-screen w-[280px] flex-col border-r border-gray-200 bg-white p-5 lg:flex">
+        <div className="flex items-center gap-3 border-b border-gray-100 pb-8">
+          <div className="flex h-12 w-12 px-2 items-center justify-center rounded-xl bg-gray-100 text-xl font-bold text-red-600">
+            CTB
+          </div>
+
+          <div>
+            <h2 className="font-bold text-red-900">Connect The Blood</h2>
+            <p className="text-sm text-yellow-500">Donor Panel</p>
+          </div>
         </div>
 
-        <div>
-          <h2 className="font-bold text-gray-900">Connect The Blood</h2>
+        <div className="mt-8 flex-1 space-y-2">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
 
-          <p className="text-sm text-gray-500">Donor Panel</p>
+            return (
+              <button
+                key={item.path}
+                type="button"
+                onClick={() => navigate(item.path)}
+                className={`flex w-full items-center gap-4 rounded-2xl px-4 py-3 text-left transition-all duration-300 ${
+                  isActive(item.path)
+                    ? "bg-red-50 text-green-500"
+                    : "text-gray-700 hover:bg-green-50 hover:text-green-500"
+                }`}
+              >
+                <Icon className="h-5 w-5" />
+                <span className="text-sm font-medium">{item.title}</span>
+              </button>
+            );
+          })}
         </div>
-      </div>
 
-      {/* Menu */}
-      <div className="flex-1 mt-8 space-y-2">
-        {menuItems.map((item, index) => {
+        <div className="space-y-3">
+          <BacktoHomeForDashboard />
+          <Logout />
+        </div>
+      </aside>
+
+      <nav className="fixed bottom-0 left-0 right-0 z-50 grid grid-cols-4 border-t border-gray-200 bg-white px-2 py-2 shadow-[0_-8px_24px_rgba(15,23,42,0.08)] lg:hidden">
+        {menuItems.map((item) => {
           const Icon = item.icon;
 
           return (
             <button
-              key={index}
-              onClick={() => item.path && navigate(item.path)}
-              className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-gray-700 hover:bg-red-50 hover:text-red-500 transition-all duration-300"
+              key={item.path}
+              type="button"
+              onClick={() => navigate(item.path)}
+              className={`flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl text-xs font-medium transition ${
+                isActive(item.path)
+                  ? "bg-red-50 text-red-500"
+                  : "text-gray-500 hover:bg-gray-50"
+              }`}
             >
-              <Icon className="w-5 h-5" />
-
-              <span className="font-medium text-sm">{item.title}</span>
+              <Icon className="h-5 w-5" />
+              <span>{item.title}</span>
             </button>
           );
         })}
-      </div>
-
-      {/* Bottom Actions */}
-      <div className="space-y-3">
-        <BacktoHomeForDashboard/>
-
-        {/* Logout */}
-       <Logout/>
-      </div>
-    </aside>
+      </nav>
+    </>
   );
 };
 

@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import { getDashboardRoute, getStoredUser } from "../../utils/authRoute";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -7,29 +8,7 @@ const Navbar = () => {
   const token =
     localStorage.getItem("token");
 
-  const user = JSON.parse(
-    localStorage.getItem("user")
-  );
-
-  // Role based dashboard route
-  const getDashboardRoute = () => {
-    switch (user?.role) {
-      case "donor":
-        return "/dashboard/donor";
-
-      case "seeker":
-        return "/dashboard/recipient";
-
-      case "bloodbank":
-        return "/dashboard/blood-bank";
-
-      case "admin":
-        return "/dashboard/admin";
-
-      default:
-        return "/";
-    }
-  };
+  const user = getStoredUser();
 
   const handleLogout = () => {
     // Clear auth
@@ -94,7 +73,7 @@ const Navbar = () => {
             <>
               {/* Dashboard Button */}
               <Link
-                to={getDashboardRoute()}
+                to={getDashboardRoute(user?.role)}
                 className="rounded-md border border-red-300 px-4 py-2 text-xs font-medium text-red-600 transition hover:bg-red-50"
               >
                 Dashboard

@@ -2,9 +2,12 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthLeftPage from "../components/structuredComponent/AuthLeftPage";
 import { registerUser } from "../Api/authApi";
+import { Eye, EyeOff } from "lucide-react";
 
 const Signup = () => {
   const navigate = useNavigate();
+  
+  const [showPass, setShowPass] = useState(false);
 
   const [form, setForm] = useState({
     fullName: "",
@@ -39,10 +42,10 @@ const Signup = () => {
       const response = await registerUser(form);
 
       // token save
-      localStorage.setItem("token", response.token);
+      localStorage.setItem("token", response.data.token);
 
       // user save
-      localStorage.setItem("user", JSON.stringify(response.user));
+      localStorage.setItem("user", JSON.stringify(response.data.user));
 
       alert("Signup successful");
 
@@ -139,20 +142,38 @@ const Signup = () => {
             </div>
 
             {/* Password */}
-            <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
-                Password
-              </label>
+             <div>
+              <div className="mb-1 flex items-center justify-between">
+                <label className="text-sm font-medium text-gray-700">
+                  Password
+                </label>
+              </div>
 
-              <input
-                type="password"
-                name="password"
-                placeholder="Minimum 8 characters"
-                value={form.password}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 outline-none focus:ring-2 focus:ring-red-400"
-                required
-              />
+              <div className="relative">
+                <input
+                  type={showPass ? "text" : "password"}
+                  name="password"
+                  placeholder="••••••••"
+                  value={form.password}
+                  onChange={handleChange}
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 pr-10 outline-none focus:ring-2 focus:ring-red-400"
+                  required
+                />
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setShowPass(!showPass)
+                  }
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                >
+                  {showPass ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
             </div>
             <div>
               <label className="mb-1 block text-sm font-medium text-gray-700">

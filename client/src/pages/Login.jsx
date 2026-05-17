@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import AuthLeftPage from "../components/structuredComponent/AuthLeftPage";
-import { loginUser } from "../api/authApi";
+import { loginUser } from "../Api/authApi";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -32,8 +32,6 @@ const handleSubmit = async (e) => {
       email: form.email,
       password: form.password,
     });
-
-    console.log(response);
 
     const user = response.data.user;
     const token = response.data.token;

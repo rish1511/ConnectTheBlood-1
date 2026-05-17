@@ -1,11 +1,68 @@
+import { useEffect, useState } from "react";
 import Sidebar from "./structuredComponents/Sidebar";
 import Topbar from "./structuredComponents/Topbar";
 import EmergencyRequests from "./structuredComponents/EmergencyRequests";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import {
+  acceptEmergencyRequest,
+  getEmergencyRequests,
+} from "../../../Api/donorApi";
 
 const DonorEmergencyRequests = () => {
   const navigate = useNavigate();
+
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [acceptingId, setAcceptingId] = useState("");
+
+  const fetchEmergencyRequests = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await getEmergencyRequests();
+      const emergencyRequests = Array.isArray(response?.data)
+        ? response.data
+        : Array.isArray(response)
+          ? response
+          : [];
+
+      setRequests(emergencyRequests);
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          "Unable to fetch emergency requests"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchEmergencyRequests();
+  }, []);
+
+  const handleAccept = async (requestId) => {
+    try {
+      setAcceptingId(requestId);
+      setError("");
+
+      await acceptEmergencyRequest(requestId);
+
+      setRequests((prev) =>
+        prev.filter((request) => (request._id || request.id) !== requestId),
+      );
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          "Unable to accept this emergency request"
+      );
+    } finally {
+      setAcceptingId("");
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gray-100 overflow-hidden">
@@ -13,24 +70,19 @@ const DonorEmergencyRequests = () => {
       <Sidebar />
 
       {/* Main Content */}
-      <div className="flex-1 overflow-y-auto p-6">
+      <div className="flex-1 overflow-y-auto p-6 pb-24 lg:pb-6">
         {/* Topbar */}
         <Topbar />
 
-        {/* Back Button */}
-        <div className="mt-6">
-          <button
-            onClick={() => navigate('/dashboard/donor')}
-            className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
-          </button>
-        </div>
-
         {/* Emergency Requests */}
         <div className="mt-6">
-          <EmergencyRequests />
+          <EmergencyRequests
+            requests={requests}
+            loading={loading}
+            error={error}
+            acceptingId={acceptingId}
+            onAccept={handleAccept}
+          />
         </div>
       </div>
     </div>

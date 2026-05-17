@@ -1,7 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { getAuthAwareRoute } from "../../utils/authRoute";
 
 const Hero = () => {
+  const donorRoute = getAuthAwareRoute("/signup");
+  const requestRoute = getAuthAwareRoute("/login");
+
   return (
     <>
       <section className="max-w-6xl h-[calc(100vh-72px)] mx-auto px-3 lg:px-6 py-4 flex items-center">
@@ -25,18 +29,32 @@ const Hero = () => {
             {/* Buttons */}
             <div className="flex flex-wrap gap-4">
               <Link
-                to="/signup"
+                to={donorRoute}
                 className="bg-red-500 hover:bg-red-600 transition-all duration-300 text-white px-7 py-3 rounded-xl font-medium shadow-md shadow-red-200"
               >
-                Become a Donor
+                {donorRoute === "/signup"
+                  ? "Become a Donor"
+                  : "Go to Dashboard"}
               </Link>
-
-              <Link
-                to="/login"
-                className="border border-gray-200 bg-white hover:bg-gray-50 transition px-7 py-3 rounded-xl font-medium text-gray-700 shadow-sm"
-              >
-                Request Blood
-              </Link>
+              {requestRoute === "/login" ? (
+                <Link
+                  to={requestRoute}
+                  className="border border-gray-200 bg-white hover:bg-gray-50 transition px-7 py-3 rounded-xl font-medium text-gray-700 shadow-sm"
+                >
+                  {requestRoute === "/login"
+                    ? "Request Blood"
+                    : "Open Dashboard"}
+                </Link>
+              ) : (
+                <Link
+                  to={requestRoute}
+                  className="border hidden border-gray-200 bg-white hover:bg-gray-50 transition px-7 py-3 rounded-xl font-medium text-gray-700 shadow-sm"
+                >
+                  {requestRoute === "/login"
+                    ? "Request Blood"
+                    : "Open Dashboard"}
+                </Link>
+              )}
             </div>
           </div>
 

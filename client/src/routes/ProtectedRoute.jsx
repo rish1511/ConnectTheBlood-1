@@ -1,6 +1,6 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getMe } from "../api/authApi";
+import { getMe } from "../Api/authApi";
 
 const ProtectedRoute = () => {
   const location = useLocation();
@@ -22,8 +22,6 @@ const ProtectedRoute = () => {
 
       try {
         const response = await getMe();
-
-        console.log(response);
 
         const currentUser = response.user;
 

@@ -13,7 +13,7 @@ const registerSchema = z.object({
 
   password: z
     .string()
-    .min(6),
+    .min(8),
 
   phone: z
     .string()
@@ -39,7 +39,7 @@ const loginSchema = z.object({
 
   password: z
     .string()
-    .min(6),
+    .min(8),
 });
 
 module.exports = {
