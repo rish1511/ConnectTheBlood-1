@@ -200,7 +200,7 @@ const DonationHistory = () => {
           donations.map((donation) => (
             <div
               key={donation._id || donation.id}
-              className="flex items-center justify-between rounded-2xl border border-gray-100 p-4 transition hover:shadow-sm"
+              className="flex flex-col gap-4 rounded-2xl border border-gray-100 p-4 transition hover:shadow-sm sm:flex-row sm:items-center sm:justify-between"
             >
               <div>
                 <h3 className="font-semibold text-gray-900">

@@ -3,6 +3,9 @@ import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import AdminDashboard from "../pages/dashboard/admin/AdminDashboard";
+import AdminUsersPage from "../pages/dashboard/admin/AdminUsersPage";
+import AdminAnalyticsPage from "../pages/dashboard/admin/AdminAnalyticsPage";
+import AdminUserViewPage from "../pages/dashboard/admin/AdminUserViewPage";
 import DonorDashboard from "../pages/dashboard/donor/DonorDashboard";
 import DonorEmergencyRequests from "../pages/dashboard/donor/DonorEmergencyRequests";
 import DonorDonationHistory from "../pages/dashboard/donor/DonorDonationHistory";
@@ -34,6 +37,9 @@ function AppRouter() {
       <Route element={<ProtectedRoute />}>
         {/* <Route path="/dashboard" element={<Dashboard />} /> */}
         <Route path="/dashboard/admin" element={<AdminDashboard />} />
+        <Route path="/dashboard/admin/users" element={<AdminUsersPage />} />
+        <Route path="/dashboard/admin/users/:id" element={<AdminUserViewPage />} />
+        <Route path="/dashboard/admin/analytics" element={<AdminAnalyticsPage />} />
         <Route path="/dashboard/donor" element={<DonorDashboard />} />
         <Route path="/dashboard/donor/profile" element={<DonorProfile />} />
         <Route

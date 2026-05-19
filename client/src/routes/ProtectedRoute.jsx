@@ -21,9 +21,7 @@ const ProtectedRoute = () => {
       }
 
       try {
-        const response = await getMe();
-
-        const currentUser = response.user;
+        const currentUser = await getMe();
 
         // refresh user data
         localStorage.setItem("user", JSON.stringify(currentUser));
@@ -67,10 +65,13 @@ const ProtectedRoute = () => {
     admin: ["/dashboard/admin"],
   };
 
-  const allowedRoutes = roleRoutes[user?.role];
+  const userRoles = user?.roles?.length ? user.roles : [user?.role];
+  const rolePriority = ["admin", "bloodbank", "donor", "seeker"];
+  const sortedRoles = rolePriority.filter((role) => userRoles.includes(role));
+  const allowedRoutes = sortedRoles.flatMap((role) => roleRoutes[role] || []);
 
   if (
-    allowedRoutes &&
+    allowedRoutes.length > 0 &&
     !allowedRoutes.some((route) => currentPath.startsWith(route))
   ) {
     return <Navigate to={allowedRoutes[0]} replace />;

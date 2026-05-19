@@ -36,17 +36,17 @@ const RecipientRequestHistory = () => {
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center text-lg font-medium text-gray-700">
+      <div className="flex min-h-screen items-center justify-center text-lg font-medium text-gray-700">
         Loading request history...
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-100">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-gray-100">
       <Sidebar />
 
-      <div className="flex-1 overflow-y-auto p-6 pb-24 lg:pb-6">
+      <div className="flex-1 overflow-y-auto p-6 pb-40 lg:pb-6">
         <Topbar user={user} />
 
         {error && (

@@ -33,19 +33,19 @@ const DonorDashboard = () => {
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center text-lg font-medium">
+      <div className="flex min-h-screen items-center justify-center text-lg font-medium">
         Loading dashboard...
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-100">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-gray-100">
       {/* Sidebar */}
       <Sidebar />
 
       {/* Main Content */}
-      <div className="flex-1 overflow-y-auto p-6 pb-24 lg:pb-6">
+      <div className="flex-1 overflow-y-auto p-6 pb-40 lg:pb-6">
         {/* Topbar */}
         <Topbar donor={dashboardData?.donor} />
 

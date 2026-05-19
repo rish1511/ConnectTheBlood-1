@@ -47,13 +47,13 @@ const Signup = () => {
         return;
       }
 
-      const response = await registerUser(form);
+      const auth = await registerUser(form);
 
       // token save
-      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("token", auth.token);
 
       // user save
-      localStorage.setItem("user", JSON.stringify(response.data.user));
+      localStorage.setItem("user", JSON.stringify(auth.user));
 
       toast.success("Signup successful");
 
@@ -99,13 +99,13 @@ const Signup = () => {
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen flex-col lg:flex-row bg-gray-50">
       {/* Left Side */}
       <AuthLeftPage />
 
       {/* Right Form */}
-      <div className="flex flex-1 items-center justify-center px-8 py-6">
-        <div className="w-full max-w-sm">
+      <div className="flex flex-1 items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
+        <div className="w-full max-w-md sm:max-w-lg">
           <h2 className="mb-1 text-2xl font-bold text-gray-900">
             Create account
           </h2>
@@ -202,9 +202,9 @@ const Signup = () => {
               />
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex flex-col gap-4 sm:flex-row">
               {/* Blood Group */}
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <label className="mb-1 block text-sm font-medium text-gray-700">
                   Blood Group
                 </label>
@@ -227,7 +227,7 @@ const Signup = () => {
               </div>
 
               {/* City */}
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <label className="mb-1 block text-sm font-medium text-gray-700">
                   City
                 </label>

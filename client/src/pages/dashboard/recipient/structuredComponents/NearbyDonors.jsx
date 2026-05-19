@@ -1,6 +1,7 @@
 import { MapPin, Phone, UserRound } from "lucide-react";
+import DonorMap from "./DonorMap";
 
-const NearbyDonors = ({ user, requests, donors = [] }) => {
+const NearbyDonors = ({ user, requests, donors = [], availableDonors = [] }) => {
   const latestRequest = requests?.[0];
   const bloodGroup = latestRequest?.bloodGroup || user?.bloodGroup || "N/A";
   const city = latestRequest?.city || user?.city || "your city";
@@ -53,7 +54,7 @@ const NearbyDonors = ({ user, requests, donors = [] }) => {
                 key={donor._id}
                 className="rounded-2xl border border-gray-100 px-4 py-3"
               >
-                <div className="flex items-start justify-between gap-3">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <h3 className="text-sm font-semibold text-gray-900">
                       {donor.fullName}
@@ -83,6 +84,8 @@ const NearbyDonors = ({ user, requests, donors = [] }) => {
               </div>
             ))}
       </div>
+
+      <DonorMap donors={availableDonors.length ? availableDonors : donors} />
     </div>
   );
 };

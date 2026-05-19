@@ -75,7 +75,7 @@ const EmergencyRequests = ({
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between mt-4">
+                <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <span className="text-xs capitalize text-orange-600 bg-orange-100 px-3 py-1 rounded-full">
                     {urgency}
                   </span>

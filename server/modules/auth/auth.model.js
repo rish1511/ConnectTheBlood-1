@@ -39,6 +39,12 @@ const userSchema = new mongoose.Schema(
       default: USER_ROLES.SEEKER,
     },
 
+    roles: {
+      type: [String],
+      enum: Object.values(USER_ROLES),
+      default: [USER_ROLES.SEEKER],
+    },
+
     city: {
       type: String,
       trim: true,
@@ -47,6 +53,23 @@ const userSchema = new mongoose.Schema(
     bloodGroup: {
       type: String,
       enum: BLOOD_GROUPS,
+    },
+
+    location: {
+      latitude: {
+        type: Number,
+      },
+      longitude: {
+        type: Number,
+      },
+      city: {
+        type: String,
+        trim: true,
+      },
+      address: {
+        type: String,
+        trim: true,
+      },
     },
 
     available: {
@@ -86,6 +109,11 @@ userSchema.index({ email: 1 });
 userSchema.index({
   bloodGroup: 1,
   city: 1,
+});
+
+userSchema.index({
+  "location.latitude": 1,
+  "location.longitude": 1,
 });
 
 const User = mongoose.model("User", userSchema);

@@ -11,7 +11,9 @@ const Hero = () => {
   const [loading, setLoading] = useState(false);
 
   const isLoggedIn = Boolean(token);
-  const isDonor = user?.role === "donor";
+  const userRoles = user?.roles?.length ? user.roles : [user?.role];
+  const isAdmin = userRoles.includes("admin");
+  const isDonor = userRoles.includes("donor");
 
   const handleBecomeDonor = async () => {
     if (!isLoggedIn) {
@@ -22,8 +24,7 @@ const Hero = () => {
     try {
       setLoading(true);
 
-      const response = await becomeDonor();
-      const updatedUser = response.data;
+      const updatedUser = await becomeDonor();
 
       localStorage.setItem("user", JSON.stringify(updatedUser));
       setUser(updatedUser);
@@ -38,8 +39,8 @@ const Hero = () => {
 
   return (
     <>
-      <section className="max-w-6xl h-[calc(100vh-72px)] mx-auto px-3 lg:px-6 py-4 flex items-center">
-        <div className="grid lg:grid-cols-2 gap-5 items-center bg-white rounded-[32px] border border-gray-100 shadow-sm w-full overflow-hidden">
+      <section className="max-w-6xl min-h-[calc(100vh-72px)] mx-auto px-3 sm:px-4 lg:px-6 py-4 flex items-center">
+        <div className="grid lg:grid-cols-2 gap-5 items-center bg-white rounded-4xl border border-gray-100 shadow-sm w-full overflow-hidden">
           {/* Left Content */}
           <div className="px-6 lg:px-10 py-8 lg:py-10">
             <span className="inline-flex items-center gap-2 bg-red-50 text-red-500 px-4 py-2 rounded-full text-sm font-medium mb-4">
@@ -58,7 +59,14 @@ const Hero = () => {
 
             {/* Buttons */}
             <div className="flex flex-wrap gap-4">
-              {!isDonor && (
+              {isAdmin ? (
+                <Link
+                  to="/dashboard/admin"
+                  className="bg-red-500 hover:bg-red-600 transition-all duration-300 text-white px-7 py-3 rounded-xl font-medium shadow-md shadow-red-200"
+                >
+                  Admin Dashboard
+                </Link>
+              ) : !isDonor ? (
                 <button
                   type="button"
                   onClick={handleBecomeDonor}
@@ -67,19 +75,21 @@ const Hero = () => {
                 >
                   {loading ? "Updating..." : "Become a Donor"}
                 </button>
-              )}
+              ) : null}
 
-              <Link
-                to={isLoggedIn ? "/dashboard/recipient" : "/login"}
-                className="bg-red-500 hover:bg-red-600 transition-all duration-300 text-white px-7 py-3 rounded-xl font-medium shadow-md shadow-red-200"
-              >
-                Request Blood
-              </Link>
+              {!isAdmin && (
+                <Link
+                  to={isLoggedIn ? "/dashboard/recipient" : "/login"}
+                  className="bg-red-500 hover:bg-red-600 transition-all duration-300 text-white px-7 py-3 rounded-xl font-medium shadow-md shadow-red-200"
+                >
+                  Request Blood
+                </Link>
+              )}
             </div>
           </div>
 
           {/* Right Section */}
-          <div className="relative h-full min-h-[500px] bg-gradient-to-br from-red-100 via-rose-100 to-red-200 flex items-center justify-center">
+          <div className="relative h-90 sm:h-105 lg:h-full min-h-90 bg-linear-to-br from-red-100 via-rose-100 to-red-200 flex items-center justify-center">
             {/* Background blur */}
             <div className="absolute top-10 right-10 w-44 h-44 bg-red-300/20 rounded-full blur-3xl"></div>
 

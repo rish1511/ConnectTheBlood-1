@@ -1,6 +1,7 @@
 const Request = require("../request/request.model");
 const User = require("../auth/auth.model");
 const ApiError = require("../../utils/apiError");
+const { createNotification } = require("../notification/notification.service");
 
 const escapeRegex = (value = "") => {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -33,6 +34,7 @@ const updateDonorProfileService = async (userId, updateData) => {
     "city",
     "bloodGroup",
     "profileImage",
+    "location",
   ];
 
   const filteredData = {};
@@ -42,6 +44,10 @@ const updateDonorProfileService = async (userId, updateData) => {
       filteredData[field] = updateData[field];
     }
   });
+
+  if (filteredData.location?.city && !filteredData.city) {
+    filteredData.city = filteredData.location.city;
+  }
 
   const updatedDonor = await User.findByIdAndUpdate(userId, filteredData, {
     returnDocument: "after",
@@ -78,6 +84,7 @@ const getDonorDashboardService = async (userId) => {
         email
         city
         bloodGroup
+        location
         available
         lastDonationDate
         profileImage
@@ -211,6 +218,17 @@ const acceptEmergencyRequestService = async (userId, requestId) => {
 
   await Promise.all([request.save(), donor.save()]);
 
+  await createNotification({
+    user: request.createdBy,
+    title: "Request Accepted",
+    message: `${donor.fullName} accepted your ${request.bloodGroup} request.`,
+    type: "request",
+    meta: {
+      requestId: String(request._id),
+      donorId: String(donor._id),
+    },
+  });
+
   return request;
 };
 
@@ -269,6 +287,17 @@ const completeEmergencyRequestService = async (userId, requestId) => {
   donor.lastDonationDate = new Date();
 
   await Promise.all([request.save(), donor.save()]);
+
+  await createNotification({
+    user: request.createdBy,
+    title: "Donation Completed",
+    message: `Your request for ${request.bloodGroup} has been marked completed.`,
+    type: "status",
+    meta: {
+      requestId: String(request._id),
+      donorId: String(donor._id),
+    },
+  });
 
   return request;
 };

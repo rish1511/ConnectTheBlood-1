@@ -2,9 +2,11 @@ const express = require("express");
 const {
   registerController,
   loginController,
+  resetPasswordController,
   becomeDonorController,
+  getMeController,
 } = require("./auth.controller");
-const { registerSchema, loginSchema } = require("./auth.validation");
+const { registerSchema, loginSchema, resetPasswordSchema } = require("./auth.validation");
 const { loginLimiter, registerLimiter } = require("../../config/rate-limiter");
 const validationMiddleware = require("../../middleware/validation.middleware");
 const authMiddleware = require("../../middleware/auth.middleware");
@@ -25,17 +27,18 @@ router.post(
   loginController,
 );
 
+router.post(
+  "/reset-password",
+  validationMiddleware(resetPasswordSchema),
+  resetPasswordController,
+);
+
 router.get("/test-error", (req, res) => {
   throw new Error("Testing Error Middleware");
 });
 
 // protected route
-router.get("/me", authMiddleware, (req, res) => {
-  res.status(200).json({
-    success: true,
-    user: req.user,
-  });
-});
+router.get("/me", authMiddleware, getMeController);
 
 router.patch("/become-donor", authMiddleware, becomeDonorController);
 

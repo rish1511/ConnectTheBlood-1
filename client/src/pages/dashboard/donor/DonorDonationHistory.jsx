@@ -4,12 +4,12 @@ import DonationHistory from "./structuredComponents/DonationHistory";
 
 const DonorDonationHistory = () => {
   return (
-    <div className="flex h-screen bg-gray-100 overflow-hidden">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-gray-100 overflow-hidden">
       {/* Sidebar */}
       <Sidebar />
 
       {/* Main Content */}
-      <div className="flex-1 overflow-y-auto p-6 pb-24 lg:pb-6">
+      <div className="flex-1 overflow-y-auto p-6 pb-40 lg:pb-6">
         {/* Topbar */}
         <Topbar />
 

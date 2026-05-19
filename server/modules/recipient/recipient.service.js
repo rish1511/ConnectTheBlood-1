@@ -32,7 +32,7 @@ const getNearbyDonors = async (recipient, latestRequest) => {
   const city = latestRequest?.city || recipient.city;
 
   const donorQuery = {
-    role: USER_ROLES.DONOR,
+    $or: [{ roles: USER_ROLES.DONOR }, { role: USER_ROLES.DONOR }],
     available: true,
   };
 
@@ -47,11 +47,24 @@ const getNearbyDonors = async (recipient, latestRequest) => {
   }
 
   return User.find(donorQuery)
-    .select("fullName phone city bloodGroup available lastDonationDate")
+    .select("fullName phone city bloodGroup location available lastDonationDate")
     .sort({
       updatedAt: -1,
     })
     .limit(6);
+};
+
+const getAvailableDonors = async () => {
+  const donorQuery = {
+    $or: [{ roles: USER_ROLES.DONOR }, { role: USER_ROLES.DONOR }],
+    available: true,
+  };
+
+  return User.find(donorQuery)
+    .select("fullName phone city bloodGroup location available lastDonationDate")
+    .sort({
+      updatedAt: -1,
+    });
 };
 
 const getRecipientDashboardService = async (userId) => {
@@ -62,6 +75,7 @@ const getRecipientDashboardService = async (userId) => {
       phone
       city
       bloodGroup
+      location
       role
       profileImage
     `,
@@ -117,12 +131,14 @@ const getRecipientDashboardService = async (userId) => {
     requests[0];
 
   const nearbyDonors = await getNearbyDonors(recipient, latestOpenRequest);
+  const availableDonors = await getAvailableDonors();
 
   return {
     recipient,
     stats,
     requests,
     nearbyDonors,
+    availableDonors,
   };
 };
 

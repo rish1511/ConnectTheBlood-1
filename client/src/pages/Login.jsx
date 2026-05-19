@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import AuthLeftPage from "../components/structuredComponent/AuthLeftPage";
 import { loginUser } from "../Api/authApi";
+import { getDashboardRoute } from "../utils/authRoute";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -29,13 +30,12 @@ const handleSubmit = async (e) => {
   e.preventDefault();
 
   try {
-    const response = await loginUser({
+    const auth = await loginUser({
       email: form.email,
       password: form.password,
     });
 
-    const user = response.data.user;
-    const token = response.data.token;
+    const { user, token } = auth;
 
     // Save token
     localStorage.setItem(
@@ -51,27 +51,7 @@ const handleSubmit = async (e) => {
 
     toast.success("Login successful");
 
-    // Role based redirect
-    switch (user.role) {
-      case "donor":
-        navigate("/dashboard/donor");
-        break;
-
-      case "seeker":
-        navigate("/dashboard/recipient");
-        break;
-
-      case "bloodbank":
-        navigate("/dashboard/blood-bank");
-        break;
-
-      case "admin":
-        navigate("/dashboard/admin");
-        break;
-
-      default:
-        navigate("/");
-    }
+    navigate(getDashboardRoute(user?.roles || user?.role));
   } catch (error) {
     console.error(error);
 
@@ -83,13 +63,13 @@ const handleSubmit = async (e) => {
 };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen flex-col lg:flex-row bg-gray-50">
       {/* Left Illustration */}
       <AuthLeftPage />
 
       {/* Right Form */}
-      <div className="flex flex-1 items-center justify-center px-6 py-8">
-        <div className="w-full max-w-sm">
+      <div className="flex flex-1 items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
+        <div className="w-full max-w-md sm:max-w-lg">
           <h2 className="mb-1 text-2xl font-bold text-gray-900">
             Welcome back
           </h2>
@@ -103,16 +83,16 @@ const handleSubmit = async (e) => {
             onSubmit={handleSubmit}
             className="space-y-4"
           >
-            {/* Email */}
+            {/* Email or Phone */}
             <div>
               <label className="mb-1 block text-sm font-medium text-gray-700">
-                Email
+                Email or Phone
               </label>
 
               <input
-                type="email"
+                type="text"
                 name="email"
-                placeholder="you@example.com"
+                placeholder="you@example.com or 9876543210"
                 value={form.email}
                 onChange={handleChange}
                 className="w-full rounded-lg border border-gray-300 px-4 py-2 outline-none focus:ring-2 focus:ring-red-400"
@@ -122,17 +102,10 @@ const handleSubmit = async (e) => {
 
             {/* Password */}
             <div>
-              <div className="mb-1 flex items-center justify-between">
+              <div className="mb-1">
                 <label className="text-sm font-medium text-gray-700">
                   Password
                 </label>
-
-                <Link
-                  to="/forgot-password"
-                  className="text-xs text-red-500 hover:underline"
-                >
-                  Forgot password?
-                </Link>
               </div>
 
               <div className="relative">

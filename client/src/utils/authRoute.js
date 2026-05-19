@@ -7,6 +7,24 @@ export const getStoredUser = () => {
 };
 
 export const getDashboardRoute = (role) => {
+  const roles = Array.isArray(role) ? role : [role];
+
+  if (roles.includes("admin")) {
+    return "/dashboard/admin";
+  }
+
+  if (roles.includes("bloodbank")) {
+    return "/dashboard/blood-bank";
+  }
+
+  if (roles.includes("donor")) {
+    return "/dashboard/donor";
+  }
+
+  if (roles.includes("seeker")) {
+    return "/dashboard/recipient";
+  }
+
   switch (role) {
     case "donor":
       return "/dashboard/donor";
@@ -33,5 +51,5 @@ export const getAuthAwareRoute = (fallbackRoute) => {
     return fallbackRoute;
   }
 
-  return getDashboardRoute(user?.role);
+  return getDashboardRoute(user?.roles || user?.role);
 };

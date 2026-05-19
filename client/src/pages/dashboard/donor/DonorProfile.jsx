@@ -12,6 +12,7 @@ const DonorProfile = () => {
   const [loading, setLoading] = useState(true);
 
   const [saving, setSaving] = useState(false);
+  const [locating, setLocating] = useState(false);
 
   const [form, setForm] = useState({
     fullName: "",
@@ -19,6 +20,12 @@ const DonorProfile = () => {
     city: "",
     bloodGroup: "",
     profileImage: "",
+    location: {
+      latitude: "",
+      longitude: "",
+      city: "",
+      address: "",
+    },
   });
 
   const fetchProfile = async () => {
@@ -33,6 +40,12 @@ const DonorProfile = () => {
         city: donor.city || "",
         bloodGroup: donor.bloodGroup || "",
         profileImage: donor.profileImage || "",
+        location: {
+          latitude: donor.location?.latitude ?? "",
+          longitude: donor.location?.longitude ?? "",
+          city: donor.location?.city || donor.city || "",
+          address: donor.location?.address || "",
+        },
       });
     } catch (error) {
       console.log("Profile Error:", error);
@@ -78,6 +91,17 @@ const DonorProfile = () => {
         }
       });
 
+      delete payload.location;
+
+      if (form.location.latitude && form.location.longitude) {
+        payload.location = {
+          latitude: Number(form.location.latitude),
+          longitude: Number(form.location.longitude),
+          city: form.location.city || form.city || "",
+          address: form.location.address || "",
+        };
+      }
+
       await updateDonorProfile(payload);
 
       toast.success("Profile updated successfully");
@@ -90,22 +114,79 @@ const DonorProfile = () => {
     }
   };
 
+  const getCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      toast.error("Geolocation is not supported in this browser");
+      return;
+    }
+
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const latitude = Number(position.coords.latitude.toFixed(6));
+        const longitude = Number(position.coords.longitude.toFixed(6));
+
+        setForm((prev) => ({
+          ...prev,
+          location: {
+            ...prev.location,
+            latitude,
+            longitude,
+          },
+        }));
+
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
+          );
+          const data = await response.json();
+          const locationCity =
+            data?.address?.city ||
+            data?.address?.town ||
+            data?.address?.village ||
+            "";
+          const state = data?.address?.state || "";
+          const address = data?.display_name || "";
+
+          setForm((prev) => ({
+            ...prev,
+            city: prev.city || [locationCity, state].filter(Boolean).join(", "),
+            location: {
+              ...prev.location,
+              city: [locationCity, state].filter(Boolean).join(", "),
+              address,
+            },
+          }));
+        } catch {
+          // Keep coordinates even if reverse geocoding fails.
+        } finally {
+          toast.success("Location captured successfully");
+          setLocating(false);
+        }
+      },
+      () => {
+        toast.error("Unable to fetch your current location");
+        setLocating(false);
+      },
+    );
+  };
+
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center text-lg">
+      <div className="flex min-h-screen items-center justify-center text-lg">
         Loading...
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-gray-100">
       <Sidebar />
 
-      <div className="flex-1 overflow-y-auto p-6 pb-24 lg:pb-6">
+      <div className="flex-1 overflow-y-auto p-6 pb-40 lg:pb-6">
         <Topbar donor={form} />
 
-        <div className="mx-auto mt-6 max-w-4xl rounded-[32px] bg-white p-8 shadow-sm">
+        <div className="mx-auto mt-6 max-w-4xl rounded-4xl bg-white p-8 shadow-sm">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900">My Profile</h1>
 
@@ -208,6 +289,52 @@ const DonorProfile = () => {
                     </option>
                   ))}
                 </select>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">Map Location</p>
+                  <p className="text-xs text-gray-500">
+                    Donors will be discoverable on map using these coordinates.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={getCurrentLocation}
+                  disabled={locating}
+                  className="rounded-xl bg-gray-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-black disabled:opacity-60"
+                >
+                  {locating ? "Detecting..." : "Get My Location"}
+                </button>
+              </div>
+
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-gray-600">
+                    Latitude
+                  </label>
+                  <input
+                    type="text"
+                    value={form.location.latitude}
+                    readOnly
+                    className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-gray-600">
+                    Longitude
+                  </label>
+                  <input
+                    type="text"
+                    value={form.location.longitude}
+                    readOnly
+                    className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700"
+                  />
+                </div>
               </div>
             </div>
 

@@ -9,6 +9,7 @@ const RecipientNearbyDonors = () => {
   const [user, setUser] = useState(null);
   const [requests, setRequests] = useState([]);
   const [donors, setDonors] = useState([]);
+  const [availableDonors, setAvailableDonors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -25,6 +26,9 @@ const RecipientNearbyDonors = () => {
       setDonors(
         Array.isArray(dashboard.nearbyDonors) ? dashboard.nearbyDonors : [],
       );
+      setAvailableDonors(
+        Array.isArray(dashboard.availableDonors) ? dashboard.availableDonors : [],
+      );
     } catch (err) {
       setError(err.response?.data?.message || "Unable to load nearby donors");
     } finally {
@@ -40,17 +44,17 @@ const RecipientNearbyDonors = () => {
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center text-lg font-medium text-gray-700">
+      <div className="flex min-h-screen items-center justify-center text-lg font-medium text-gray-700">
         Loading nearby donors...
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-100">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-gray-100">
       <Sidebar />
 
-      <div className="flex-1 overflow-y-auto p-6 pb-24 lg:pb-6">
+      <div className="flex-1 overflow-y-auto p-6 pb-40 lg:pb-6">
         <Topbar user={user} />
 
         {error && (
@@ -60,7 +64,12 @@ const RecipientNearbyDonors = () => {
         )}
 
         <div className="mt-6">
-          <NearbyDonors user={user} requests={requests} donors={donors} />
+          <NearbyDonors
+            user={user}
+            requests={requests}
+            donors={donors}
+            availableDonors={availableDonors}
+          />
         </div>
       </div>
     </div>

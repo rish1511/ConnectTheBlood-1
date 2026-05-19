@@ -4,13 +4,13 @@ const Footer = () => {
   return (
     <footer className="bg-white border-t border-gray-200 mt-20">
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
 
           {/* Logo + About */}
-          <div>
-            <div className="flex items-center gap-2 mb-4">
+          <div className="text-center md:text-left">
+            <div className="flex items-center justify-center md:justify-start gap-2 mb-4">
               <span className="text-red-600 text-xl">
                 🩸
               </span>
@@ -28,7 +28,7 @@ const Footer = () => {
           </div>
 
           {/* Quick Links */}
-          <div>
+          <div className="text-center md:text-left">
             <h3 className="font-semibold text-gray-900 mb-4">
               Quick Links
             </h3>
@@ -65,7 +65,7 @@ const Footer = () => {
           </div>
 
           {/* Services */}
-          <div>
+          <div className="text-center md:text-left">
             <h3 className="font-semibold text-gray-900 mb-4">
               Services
             </h3>
@@ -79,7 +79,7 @@ const Footer = () => {
           </div>
 
           {/* Contact */}
-          <div>
+          <div className="text-center md:text-left">
             <h3 className="font-semibold text-gray-900 mb-4">
               Contact
             </h3>

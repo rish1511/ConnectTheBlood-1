@@ -54,6 +54,15 @@ const updateProfileSchema =
         "Invalid profile image URL"
       )
       .optional(),
+
+    location: z
+      .object({
+        latitude: z.number().min(-90).max(90).optional(),
+        longitude: z.number().min(-180).max(180).optional(),
+        city: z.string().min(2).max(50).optional(),
+        address: z.string().min(2).max(120).optional(),
+      })
+      .optional(),
   });
 
 const updateAvailabilitySchema =
