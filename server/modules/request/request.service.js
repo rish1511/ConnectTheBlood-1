@@ -7,16 +7,38 @@ const {
   createNotificationsForUsers,
 } = require("../notification/notification.service");
 
+const escapeRegex = (value = "") => {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+};
+
+const getCityFilter = (city = "") => {
+  const primaryCity = city.split(",")[0]?.trim();
+  if (!primaryCity) {
+    return undefined;
+  }
+  return new RegExp(`^${escapeRegex(primaryCity)}`, "i");
+};
+
 const createRequestService = async (userId, payload) => {
   const request = await Request.create({
     ...payload,
     createdBy: userId,
   });
 
+  const cityFilter = getCityFilter(request.city);
+
   const matchingDonors = await User.find({
     $or: [{ role: USER_ROLES.DONOR }, { roles: USER_ROLES.DONOR }],
     bloodGroup: request.bloodGroup,
     isBlocked: false,
+    ...(cityFilter
+      ? {
+          $or: [
+            { city: cityFilter },
+            { "location.city": cityFilter },
+          ],
+        }
+      : {}),
   })
     .select("_id")
     .lean();
